@@ -5,7 +5,7 @@
   "repository": {},
   "license": "MIT",
   "scripts": {
-    "test": "todo"
+    "test": "mocha ."
   },
   "devDependencies": {
     "eslint": "^3.15.0",
