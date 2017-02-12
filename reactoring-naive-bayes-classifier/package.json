@@ -1,0 +1,20 @@
+{
+  "name": "reactoring-naive-bayes-classifier",
+  "version": "1.0.0",
+  "main": "nbs.js",
+  "repository": {},
+  "license": "MIT",
+  "scripts": {
+    "test": "todo"
+  },
+  "devDependencies": {
+    "eslint": "^3.15.0",
+    "eslint-config-airbnb": "latest",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.2 || ^4.0.0",
+    "eslint-plugin-react": "^6.9.0"
+  },
+  "dependencies": {
+    "wish": "^0.1.2"
+  }
+}
