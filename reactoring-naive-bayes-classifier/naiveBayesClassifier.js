@@ -28,16 +28,16 @@ var chordCountsInLabels = {};
 var probabilityOfChordsInLabels = {};
 
 function train(chords, label){
-  var index;
   songs.push([label, chords]);
   labels.push(label);
-  for (index = 0; index < chords.length; index++){
-    if(!allChords.includes(chords[index])){
-      allChords.push(chords[index]);
+  chords.forEach(chord => {
+    if(!allChords.includes(chord)){
+      allChords.push(chord);
     }
-  }
+  });
+
   if(Object.keys(labelCounts).includes(label)){
-    labelCounts[label] = labelCounts[label] + 1;
+    labelCounts[label] += 1;
   } else {
     labelCounts[label] = 1;
   }
