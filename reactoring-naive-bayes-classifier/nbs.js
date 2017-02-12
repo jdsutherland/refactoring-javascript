@@ -55,7 +55,7 @@ function setChordCountsInLabels() {
       chordCountsInLabels.set(song.label, {});
     }
     song.chords.forEach((chord) => {
-      if (chordCountsInLabels.get(song.label[chord]) > 0) {
+      if (chordCountsInLabels.get(song.label)[chord] > 0) {
         chordCountsInLabels.get(song.label)[chord] += 1;
       } else {
         chordCountsInLabels.get(song.label)[chord] = 1;
@@ -101,7 +101,6 @@ function classify(chords) {
     });
     classified.set(difficulty, first);
   });
-  debugger;
   return classified;
 }
 
