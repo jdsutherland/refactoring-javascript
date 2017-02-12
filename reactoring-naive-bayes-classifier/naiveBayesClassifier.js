@@ -1,3 +1,8 @@
+function fileName(){
+  var theError = new Error("here I am");
+  return theError.stack.match(/\/(\w+\.js)\:/)[1];
+};
+console.log(`Welcome to ${fileName()}!`);
 var easy = 'easy';
 var medium = 'medium';
 var hard = 'hard';
