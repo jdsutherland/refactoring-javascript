@@ -1,4 +1,4 @@
-var songList = {
+const songList = {
   difficulties: ['easy', 'medium', 'hard'],
   songs: [],
   addSong(name, chords, difficulty) {
@@ -6,7 +6,7 @@ var songList = {
   },
 };
 
-var classifier = {
+const classifier = {
   songs: [],
   allChords: new Set(),
   labelCounts: new Map(),
@@ -16,7 +16,7 @@ var classifier = {
 };
 
 function fileName() {
-  var theError = new Error("here I am");
+  const theError = new Error("here I am");
   return theError.stack.match(/\/(\w+\.js)\:/)[1];
 }
 
@@ -91,12 +91,12 @@ function trainAll() {
 }
 
 function classify(chords) {
-  var smoothing = 1.01;
-  var classified = new Map();
+  const smoothing = 1.01;
+  const classified = new Map();
   classifier.labelProbabilities.forEach((_probabilities, difficulty) => {
-    var first = classifier.labelProbabilities.get(difficulty) + smoothing;
+    let first = classifier.labelProbabilities.get(difficulty) + smoothing;
     chords.forEach((chord) => {
-      var probabilityOfChordInLabel = classifier.probabilityOfChordsInLabels.get(difficulty)[chord]
+      const probabilityOfChordInLabel = classifier.probabilityOfChordsInLabels.get(difficulty)[chord]
       if (probabilityOfChordInLabel) {
         first *= (probabilityOfChordInLabel + smoothing);
       }
@@ -106,14 +106,14 @@ function classify(chords) {
   return classified;
 }
 
-var wish = require('wish');
+const wish = require('wish');
 
 describe('the file', function() {
   setSongs();
   trainAll();
 
   it('classifies again', function() {
-    var classified = classify(['d', 'g', 'e', 'dm']);
+    const classified = classify(['d', 'g', 'e', 'dm']);
 
     wish(classified.get('easy') === 2.023094827160494);
     wish(classified.get('medium') === 1.855758613168724);
@@ -121,7 +121,7 @@ describe('the file', function() {
   });
 
   it('classifies', function() {
-    var classified = classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
+    const classified = classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
 
     wish(classified.get('easy') === 1.3433333333333333);
     wish(classified.get('medium') === 1.5060259259259259);
