@@ -13,10 +13,16 @@ const classifier = {
   labelProbabilities: new Map(),
   chordCountsInLabels: new Map(),
   smoothing: 1.01,
+
+  likelihoodFromChord(difficulty, chord) {
+    return this.chordCountsInLabels.get(difficulty)[chord] / this.songs.length;
+  },
+
   valueForChordDifficulty(difficulty, chord) {
-    const value = this.chordCountsInLabels.get(difficulty)[chord];
+    const value = this.likelihoodFromChord(difficulty, chord);
     return value ? value + this.smoothing : 1;
   },
+
   classify(chords) {
     return new Map(Array.from(
       this.labelProbabilities.entries()).map((labelWithProbability) => {
@@ -83,18 +89,9 @@ function setChordCountsInLabels() {
   });
 }
 
-function setProbabilityOfChordsInLabels() {
-  classifier.chordCountsInLabels.forEach((_chords, difficulty) => {
-    Object.keys(classifier.chordCountsInLabels.get(difficulty)).forEach((chord) => {
-      classifier.chordCountsInLabels.get(difficulty)[chord] /= classifier.songs.length;
-    });
-  });
-}
-
 function setLabelsAndProbabilities() {
   setLabelProbabilities();
   setChordCountsInLabels();
-  setProbabilityOfChordsInLabels();
 }
 
 function trainAll() {
