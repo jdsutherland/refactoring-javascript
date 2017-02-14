@@ -13,6 +13,18 @@ const classifier = {
   labelProbabilities: new Map(),
   chordCountsInLabels: new Map(),
   probabilityOfChordsInLabels: new Map(),
+  classify(chords) {
+    const smoothing = 1.01;
+    const classified = new Map();
+    classifier.labelProbabilities.forEach((_probabilities, difficulty) => {
+      const totalLikelihood = chords.reduce((total, chord) => {
+        const probabilityOfChordInLabel = classifier.probabilityOfChordsInLabels.get(difficulty)[chord];
+        return probabilityOfChordInLabel ? total * (probabilityOfChordInLabel + smoothing) : total;
+      }, classifier.labelProbabilities.get(difficulty) + smoothing);
+      classified.set(difficulty, totalLikelihood);
+    });
+    return classified;
+  },
 };
 
 function fileName() {
@@ -90,18 +102,6 @@ function trainAll() {
   setLabelsAndProbabilities();
 }
 
-function classify(chords) {
-  const smoothing = 1.01;
-  const classified = new Map();
-  classifier.labelProbabilities.forEach((_probabilities, difficulty) => {
-    const totalLikelihood = chords.reduce((total, chord) => {
-      const probabilityOfChordInLabel = classifier.probabilityOfChordsInLabels.get(difficulty)[chord];
-      return probabilityOfChordInLabel ? total * (probabilityOfChordInLabel + smoothing) : total;
-    }, classifier.labelProbabilities.get(difficulty) + smoothing);
-    classified.set(difficulty, totalLikelihood);
-  });
-  return classified;
-}
 
 const wish = require('wish');
 
@@ -110,7 +110,7 @@ describe('the file', function() {
   trainAll();
 
   it('classifies again', function() {
-    const classified = classify(['d', 'g', 'e', 'dm']);
+    const classified = classifier.classify(['d', 'g', 'e', 'dm']);
 
     wish(classified.get('easy') === 2.023094827160494);
     wish(classified.get('medium') === 1.855758613168724);
@@ -118,7 +118,7 @@ describe('the file', function() {
   });
 
   it('classifies', function() {
-    const classified = classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
+    const classified = classifier.classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
 
     wish(classified.get('easy') === 1.3433333333333333);
     wish(classified.get('medium') === 1.5060259259259259);
