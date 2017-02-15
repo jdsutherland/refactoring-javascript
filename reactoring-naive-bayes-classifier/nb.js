@@ -34,17 +34,12 @@ const classifier = {
   },
 
   chordCountForDifficulty(difficulty, testChord) {
-    let counter = 0;
-    songList.songs.forEach((song) => {
+    return songList.songs.reduce((counter, song) => {
       if (song.difficulty === difficulty) {
-        song.chords.forEach((chord) => {
-          if (chord === testChord) {
-            counter += 1;
-          }
-        });
+        counter += song.chords.filter(chord => chord === testChord).length;
       }
-    });
-    return counter;
+      return counter;
+    }, 0);
   },
 }
 
