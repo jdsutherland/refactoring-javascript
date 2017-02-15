@@ -32,6 +32,21 @@ const classifier = {
         }, this.labelProbabilities.get(difficulty) + this.smoothing)];
       }));
   },
+
+  setChordCountsInLabels() {
+    songList.songs.forEach((song) => {
+      if (this.chordCountsInLabels.get(song.difficulty) === undefined) {
+        this.chordCountsInLabels.set(song.difficulty, {});
+      }
+      song.chords.forEach((chord) => {
+        if (this.chordCountsInLabels.get(song.difficulty)[chord] > 0) {
+          this.chordCountsInLabels.get(song.difficulty)[chord] += 1;
+        } else {
+          this.chordCountsInLabels.get(song.difficulty)[chord] = 1;
+        }
+      });
+    });
+  },
 };
 
 function fileName() {
@@ -73,24 +88,9 @@ function setLabelProbabilities() {
   });
 }
 
-function setChordCountsInLabels() {
-  songList.songs.forEach((song) => {
-    if (classifier.chordCountsInLabels.get(song.difficulty) === undefined) {
-      classifier.chordCountsInLabels.set(song.difficulty, {});
-    }
-    song.chords.forEach((chord) => {
-      if (classifier.chordCountsInLabels.get(song.difficulty)[chord] > 0) {
-        classifier.chordCountsInLabels.get(song.difficulty)[chord] += 1;
-      } else {
-        classifier.chordCountsInLabels.get(song.difficulty)[chord] = 1;
-      }
-    });
-  });
-}
-
 function setLabelsAndProbabilities() {
   setLabelProbabilities();
-  setChordCountsInLabels();
+  classifier.setChordCountsInLabels();
 }
 
 function trainAll() {
