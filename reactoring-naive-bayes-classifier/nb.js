@@ -1,10 +1,10 @@
 class Classifier {
   constructor() {
-    this.labelCounts = new Map();
-    this.labelProbabilities = new Map();
     this.chordCountsInLabels = new Map();
-    this.smoothing = 1.01;
-    this.songList = {
+    this._labelCounts = new Map();
+    this._labelProbabilities = new Map();
+    this._smoothing = 1.01;
+    this._songList = {
       difficulties: ['easy', 'medium', 'hard'],
       songs: [],
       allChords: new Set(),
@@ -15,47 +15,47 @@ class Classifier {
   }
 
   addSong(...songParams) {
-    this.songList.addSong(...songParams);
+    this._songList.addSong(...songParams);
   }
 
   classify(chords) {
     return new Map(Array.from(
-      this.labelProbabilities.entries()).map((labelWithProbability) => {
+      this._labelProbabilities.entries()).map((labelWithProbability) => {
         const difficulty = labelWithProbability[0];
         return [difficulty, chords.reduce((total, chord) => (
-          total * this.valueForChordDifficulty(difficulty, chord)
-        ), this.labelProbabilities.get(difficulty) + this.smoothing)];
+          total * this._valueForChordDifficulty(difficulty, chord)
+        ), this._labelProbabilities.get(difficulty) + this._smoothing)];
       })
     );
   }
 
   trainAll() {
-    this.songList.songs.forEach(song => this.train(song.chords, song.difficulty));
-    this.setLabelProbabilities();
+    this._songList.songs.forEach(song => this._train(song.chords, song.difficulty));
+    this._setLabelProbabilities();
   }
 
   // TODO: make idempotent
-  train(chords, label) {
-    chords.forEach(chord => this.songList.allChords.add(chord));
+  _train(chords, label) {
+    chords.forEach(chord => this._songList.allChords.add(chord));
 
-    if (Array.from(this.labelCounts.keys()).includes(label)) {
-      this.labelCounts.set(label, this.labelCounts.get(label) + 1);
+    if (Array.from(this._labelCounts.keys()).includes(label)) {
+      this._labelCounts.set(label, this._labelCounts.get(label) + 1);
     } else {
-      this.labelCounts.set(label, 1);
+      this._labelCounts.set(label, 1);
     }
   }
 
-  valueForChordDifficulty(difficulty, chord) {
-    const value = this.likelihoodFromChord(difficulty, chord);
-    return value ? value + this.smoothing : 1;
+  _valueForChordDifficulty(difficulty, chord) {
+    const value = this._likelihoodFromChord(difficulty, chord);
+    return value ? value + this._smoothing : 1;
   }
 
-  likelihoodFromChord(difficulty, chord) {
-    return this.chordCountForDifficulty(difficulty, chord) / this.songList.songs.length;
+  _likelihoodFromChord(difficulty, chord) {
+    return this._chordCountForDifficulty(difficulty, chord) / this._songList.songs.length;
   }
 
-  chordCountForDifficulty(difficulty, testChord) {
-    return this.songList.songs.reduce((counter, song) => {
+  _chordCountForDifficulty(difficulty, testChord) {
+    return this._songList.songs.reduce((counter, song) => {
       if (song.difficulty === difficulty) {
         counter += song.chords.filter(chord => chord === testChord).length;
       }
@@ -63,9 +63,9 @@ class Classifier {
     }, 0);
   }
 
-  setLabelProbabilities() {
-    this.labelCounts.forEach((_count, label) => {
-      this.labelProbabilities.set(label, this.labelCounts.get(label) / this.songList.songs.length);
+  _setLabelProbabilities() {
+    this._labelCounts.forEach((_count, label) => {
+      this._labelProbabilities.set(label, this._labelCounts.get(label) / this._songList.songs.length);
     });
   }
 }
@@ -107,8 +107,8 @@ describe('the file', () => {
   });
 
   it('label probabilities', () => {
-    wish(classifier.labelProbabilities.get('easy') === 0.3333333333333333);
-    wish(classifier.labelProbabilities.get('medium') === 0.3333333333333333);
-    wish(classifier.labelProbabilities.get('hard') === 0.3333333333333333);
+    wish(classifier._labelProbabilities.get('easy') === 0.3333333333333333);
+    wish(classifier._labelProbabilities.get('medium') === 0.3333333333333333);
+    wish(classifier._labelProbabilities.get('hard') === 0.3333333333333333);
   });
 });
