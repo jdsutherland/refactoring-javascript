@@ -1,0 +1,7 @@
+{
+  "dependencies": {},
+  "devDependencies": {
+    "deep-equal": "^1.0.1",
+    "wish": "^0.1.2"
+  }
+}

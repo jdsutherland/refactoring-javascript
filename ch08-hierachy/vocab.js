@@ -1,39 +1,46 @@
-class Word {
-  constructor(word, language, lookUpUrl) {
-    this.word = word;
-    this.language = language;
-    this.lookUpUrl = lookUpUrl;
-  };
-  count() {
+function Word(word, language, lookUpUrl) {
+  this.word = word;
+  this.language = language;
+  this.lookUpUrl = lookUpUrl;
+  this.count = function() {
     return this.word.length;
   };
-  lookUp() {
+  this.lookUp = function() {
     return this.lookUpUrl + this.word;
   };
-};
-class EnglishWord extends Word {
-  constructor(word) {
-    super(word, 'English', 'https://en.wiktionary.org/wiki/');
-  };
-};
-class JapaneseWord extends Word {
-  constructor(word) {
-    super(word, 'Japanese', 'http://jisho.org/search/');
-  };
-};
+}
 
+function EnglishWord(word) {
+  Word.call(this, word, 'English', 'https://en.wiktionary.org/wiki/');
+}
+
+function JapaneseWord(word) {
+  Word.call(this, word, 'Japanese', 'http://jisho.org/search/');
+}
+
+JapaneseWord.prototype = Object.create(Word.prototype);
+JapaneseWord.prototype.constructor = JapaneseWord;
+EnglishWord.prototype = Object.create(Word.prototype);
+EnglishWord.prototype.constructor = EnglishWord;
+
+
+Word.prototype.reportLanguage = function(){
+  return `The language is: ${this.language}`;
+};
 const japaneseWord = new JapaneseWord("犬");
+console.log(japaneseWord.reportLanguage());
+
 const englishWord = new EnglishWord("dog");
 
 const wish = require('wish');
-const deepEqual = require('deep-equal')
+const deepEqual = require('deep-equal');
 
 // interfaces tests
-wish(japaneseWord.word === "犬");
+wish(japaneseWord.word ===  "犬");
 wish(japaneseWord.lookUp() === "http://jisho.org/search/犬");
 wish(japaneseWord.count() === 1);
 
-wish(englishWord.word === "dog");
+wish(englishWord.word ===  "dog");
 wish(englishWord.lookUp() === "https://en.wiktionary.org/wiki/dog");
 wish(englishWord.count() === 3);
 
@@ -45,9 +52,9 @@ wish(japaneseWord instanceof Word);
 wish(!(JapaneseWord instanceof Word));
 
 wish(japaneseWord.constructor === JapaneseWord);
-wish(Object.getPrototypeOf(JapaneseWord) === Word);
+// wish(Object.getPrototypeOf(JapaneseWord) === Word);
 
 // sketchy bits
-wish(deepEqual(Object.getPrototypeOf(japaneseWord), {}));
+// wish(deepEqual(Object.getPrototypeOf(japaneseWord), {}));
 console.log(Object.getPrototypeOf(japaneseWord));
-// reports JapaneseWord {}
+// JapaneseWord { constructor: [Function: JapaneseWord] }
