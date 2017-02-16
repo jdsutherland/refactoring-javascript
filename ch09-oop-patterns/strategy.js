@@ -1,21 +1,23 @@
+// context
 class Person {
-  constructor(knowsBinary) {
-    this.knowsBinary = knowsBinary;
+  constructor(strategy) {
+    this.strategy = strategy;
   };
   log(number) {
-    console.log(this.whatIs(number))
-  };
-  whatIs(number) {
-    if (this.knowsBinary) {
-      return Number('0b' + number);
-    } else {
-      return number;
-    }
+    console.log(this.strategy(number))
   };
 }
 
-const personOne = new Person(true);
-const personTwo = new Person(false);
-[personOne, personTwo].forEach(person => {
-  person.log(10)
-})
+// strategy
+const binary = {
+  aware(number) {
+    return Number('0b' + number);
+  },
+  oblivious(number) {
+    return number;
+  }
+};
+
+const personOne = new Person(binary.aware);
+const personTwo = new Person(binary.oblivious);
+[personOne, personTwo].forEach(person => person.log(10));
