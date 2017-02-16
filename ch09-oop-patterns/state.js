@@ -1,10 +1,13 @@
 class Person {
   constructor(binaryKnowledge) {
-    this.binaryKnowledge = binaryKnowledge;
+    this.binaryKnowledge = Object.create(
+      Object.assign({ person: this },
+        binaryKnowledge));
   }
-
   change(binaryKnowledge) {
-    this.binaryKnowledge = binaryKnowledge;
+    this.binaryKnowledge = Object.create(
+      Object.assign({ person: this },
+        binaryKnowledge));
   }
 }
 
@@ -18,10 +21,10 @@ const binaryAwareness = {
   xor(numberOne, numberTwo) {
     return numberOne ^ numberTwo;
   },
-  forget(person) {
-    person.change(binaryObliviousness);
-  },
-};
+  forget() {
+    this.person.change(binaryObliviousness);
+  }
+}
 
 const binaryObliviousness = {
   read(number) {
@@ -30,14 +33,15 @@ const binaryObliviousness = {
   and(numberOne, numberTwo) {
     return "unknown";
   },
-  xor(numberOne, numberTwo) {
+  xor(number) {
     return "unknown";
   },
-  learn(person) {
-    person.change(binaryAwareness);
-  },
+  learn() {
+    this.person.change(binaryAwareness);
+  }
 };
 
+debugger;
 const personOne = new Person(binaryAwareness);
 const personTwo = new Person(binaryObliviousness);
 
@@ -47,11 +51,17 @@ const personTwo = new Person(binaryObliviousness);
   console.log(person.binaryKnowledge.xor(2, 3));
 });
 
-personOne.binaryKnowledge.forget(personOne);
-personTwo.binaryKnowledge.learn(personTwo);
+personOne.binaryKnowledge.forget();
+personTwo.binaryKnowledge.learn();
 
 [personOne, personTwo].forEach(person => {
   console.log(person.binaryKnowledge.read(10));
   console.log(person.binaryKnowledge.and(2, 3));
   console.log(person.binaryKnowledge.xor(2, 3));
+});
+
+personTwo.binaryKnowledge.forget();
+personTwo.binaryKnowledge.read = () => 'will not assign both';
+[personOne, personTwo].forEach(person => {
+  console.log(person.binaryKnowledge.read(3));
 });
