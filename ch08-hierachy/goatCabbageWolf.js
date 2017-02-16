@@ -1,46 +1,40 @@
-class Agent {
-  constructor(name, type) {
-    this.name = 'name';
-    if (Math.random() > .5) {
-      this.type = 'user';
-    } else {
-      this.type = 'project';
-    }
-  };
-  static makeProjectOrUser(agent) {
-    if (agent.type === 'user') {
-      return Object.assign(Object.create(new User), agent);
-    } else {
-      return Object.assign(Object.create(new Project), agent);
-    }
-  };
+function coinToss() {
+  return Math.random() > .5;
 }
 
-class User extends Agent {
+class User {
+  constructor(name) {
+    this.name = name;
+  };
   sayName() {
     return `my name is ${this.name}`;
-  }
+  };
 }
 
-class Project extends Agent {
+class Project {
+  constructor(name) {
+    this.name = name;
+  };
   sayTheName() {
     return `the project name is ${this.name}`;
-  }
+  };
 }
 
-const agent = new Agent('name');
-const projectOrUser = Agent.makeProjectOrUser(agent);
-
-if (projectOrUser.type === 'user') {
-  console.log(projectOrUser.sayName());
+let agent;
+if (coinToss()) {
+  agent = new User('name');
 } else {
-  console.log(projectOrUser.sayTheName());
+  agent = new Project('name');
 }
 
 const wish = require('wish');
 
-if (projectOrUser.type === 'user') {
-  wish(projectOrUser.sayName() === "my name is name");
+if (agent instanceof User) {
+  wish(agent.sayName() === "my name is name");
 } else {
-  wish(projectOrUser.sayTheName() === "the project name is name");
+  wish(agent.sayTheName() === "the project name is name");
 }
+
+wish(new User('name', 'user').sayName() === "my name is name");
+wish(new Project('name', 'project').sayTheName() ===
+  "the project name is name");
