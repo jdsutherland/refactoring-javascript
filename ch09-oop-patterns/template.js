@@ -1,22 +1,21 @@
 class Person {
-  constructor(binaryKnower) {
-    this.binaryKnower = binaryKnower;
+  log(number) {
+    console.log(this.whatIs(number));
   };
+}
+
+class BinaryKnower extends Person {
   whatIs(number) {
-    return number
-  };
-  whatIsInBinary(number) {
     return Number('0b' + number)
   };
 }
 
-const personOne = new Person(true);
-const personTwo = new Person(false);
+class BinaryOblivious extends Person {
+  whatIs(number) {
+    return number
+  };
+}
 
-[personOne, personTwo].forEach(person => {
-  if (person.binaryKnower) {
-    console.log(person.whatIsInBinary(10));
-  } else {
-    console.log(person.whatIs(10));
-  }
-});
+const personOne = new BinaryKnower();
+const personTwo = new BinaryOblivious();
+[personOne, personTwo].forEach(person => person.log(10));
