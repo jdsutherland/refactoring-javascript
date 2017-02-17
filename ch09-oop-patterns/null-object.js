@@ -1,40 +1,41 @@
 class Person {
-  constructor(name){
-    this.name = name;
+  constructor(name) {
+    this.name = new NameString(name);
   }
-};
+}
+
 class AnonymousPerson extends Person {
-  constructor(){
+  constructor() {
     super();
-    this.name = null;
+    this.name = new NullString;
   }
-};
+}
 
-function capitalize(string) {
-  if(string === null){
-    return null;
-  }else{
-    return string[0].toUpperCase() + string.substring(1);
-  }
-};
+class NameString extends String {
+  capitalize() {
+    return new NameString(this[0].toUpperCase() + this.substring(1));
+  };
+  tigerify() {
+    return new NameString(`${this}, the tiger`);
+  };
+  display() {
+    return this.toString();
+  };
+}
 
-function tigerify(string) {
-  if(string === null){
-    return null;
-  }else{
-    return `${string}, the tiger`;
-  }
-};
-
-function display(string){
-  if(string === null){
+class NullString {
+  capitalize() {
+    return this;
+  };
+  tigerify() {
+    return this;
+  };
+  display() {
     return '';
-  }else{
-    return string;
-  }
-};
+  };
+}
 
 personOne = new Person("tony");
 personTwo = new AnonymousPerson("tony");
-console.log(display(tigerify(capitalize(personOne.name))));
-console.log(display(tigerify(capitalize(personTwo.name))));
+console.log(personOne.name.capitalize().tigerify().display());
+console.log(personTwo.name.capitalize().tigerify().display());
